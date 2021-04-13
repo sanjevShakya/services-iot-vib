@@ -16,9 +16,10 @@ export const fetchDeviceState = async (client, data) => {
       device = _get(device, 'attributes', {});
       const devicePayload = {
         deviceMACId: device.macId,
-        minVibration: device.minVibrationAmplitude,
-        maxVibration: device.maxVibrationAmplitude,
-        tolerableSleepDuration: device.tolerableSleepDuration
+        stateVerified: true,
+        minThreshold: device.minVibrationAmplitude,
+        maxThreshold: device.maxVibrationAmplitude,
+        tolerableSleep: device.tolerableSleepDuration
       };
 
       client.publish(topics.IOT_DEVICE_STATE, JSON.stringify(devicePayload));

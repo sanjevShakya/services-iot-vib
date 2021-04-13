@@ -2,8 +2,8 @@ export const IOT_VERIFY = 'iot-vib/verify';
 export const IOT_BROADCAST = 'iot-vib/broadcast';
 export const IOT_BROADCAST_VERIFY = 'iot-vib/broadcast/verify';
 export const IOT_UNVERIFIED_AVAILABLE_DEVICES = 'iot-vib/unverified-available-devices';
-export const IOT_DEVICE_STATE = 'iot-vib/state';
-export const IOT_DEVICE_GET_STATE = 'iot-vib/device';
+export const IOT_DEVICE_STATE = 'iot-vib/broadcast/state/verify';
+export const IOT_DEVICE_GET_STATE = 'iot-vib/broadcast/state';
 
 export const TOPIC_CONFIG = {
   [IOT_BROADCAST]: {
