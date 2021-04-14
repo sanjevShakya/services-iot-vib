@@ -15,6 +15,7 @@ export function up(knex) {
     table.decimal('tolerableSleepDuration').defaultTo(10);
     table.decimal('minVibrationAmplitude').defaultTo(0);
     table.decimal('maxVibrationAmplitude').defaultTo(10);
+    table.decimal('tenSecondMaxVibrationAmplitude').defaultTo(8);
     table.string('metadataId').unique().notNull();
   });
 }

@@ -1,6 +1,12 @@
 import mqtt from 'mqtt';
 import logger from '../../core/utils/logger';
-import { TOPICS, IOT_BROADCAST, IOT_DEVICE_GET_STATE } from '../../core/constants/topics';
+import {
+  TOPICS,
+  IOT_BROADCAST,
+  IOT_DEVICE_GET_STATE,
+  IOT_DEVICE_DATA,
+  IOT_DEVICE_STATE
+} from '../../core/constants/topics';
 import * as mqttService from './mqttService';
 
 class MqttHandler {
@@ -33,6 +39,12 @@ class MqttHandler {
         break;
       case IOT_DEVICE_GET_STATE:
         mqttService.fetchDeviceState(this.client, data, topic);
+        break;
+      case IOT_DEVICE_DATA:
+        mqttService.handleDeviceData(this.client, data, topic);
+        break;
+      case IOT_DEVICE_STATE:
+        mqttService.handleDeviceState(this.client, data, topic);
         break;
     }
   }

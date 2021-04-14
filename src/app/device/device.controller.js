@@ -30,6 +30,13 @@ export function fetchById(req, res, next) {
     .catch((err) => next(err));
 }
 
+export function fetchByMetadataName(req, res, next) {
+  deviceService
+    .getDeviceByMetadataName(req.params.name)
+    .then((data) => res.json({ data }))
+    .catch((err) => next(err));
+}
+
 /**
  * Create a new device.
  *
@@ -53,7 +60,7 @@ export function create(req, res, next) {
  */
 export function update(req, res, next) {
   deviceService
-    .updateDevice(req.params.id, req.body)
+    .updateDevice(req.params.id, req.body, req.mqttClient)
     .then((data) => res.json({ data }))
     .catch((err) => next(err));
 }

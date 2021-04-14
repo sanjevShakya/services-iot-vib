@@ -1,6 +1,7 @@
 import Boom from '@hapi/boom';
 
 import Device from './device.model';
+import { IOT_DEVICE_STATE } from '../../core/constants/topics';
 
 /**
  * Get all devices.
@@ -26,6 +27,20 @@ export function getDevice(id) {
     });
 }
 
+/**
+ * Get a device.
+ *
+ * @param   {Number|String}  metadataName
+ * @returns {Promise}
+ */
+export function getDeviceByMetadataName(metadataName) {
+  return new Device({ metadataId: metadataName })
+    .fetch()
+    .then((device) => device)
+    .catch(Device.NotFoundError, () => {
+      throw Boom.notFound('Device not found');
+    });
+}
 /**
  * Get a device by MAC id.
  *
@@ -61,10 +76,32 @@ export function createDevice(device) {
  *
  * @param   {Number|String}  id
  * @param   {Object}         device
+ * @param {Object} mqttClient
  * @returns {Promise}
  */
-export function updateDevice(id, device) {
-  return new Device({ id }).save(device);
+export async function updateDevice(id, device, mqttClient) {
+  const updatedDevice = await new Device({ id }).save(device);
+
+  try {
+    mqttClient.client.publish(IOT_DEVICE_STATE, JSON.stringify(getMqttPayloadDeviceState(device)));
+  } catch (e) {
+    // do nothing
+  }
+
+  return updatedDevice;
+}
+
+function getMqttPayloadDeviceState(device) {
+  const devicePayload = {
+    deviceMACId: device.macId,
+    stateVerified: true,
+    minThreshold: device.minVibrationAmplitude,
+    fiveMThreshold: device.maxVibrationAmplitude,
+    tenSThreshold: device.tenSecondMaxVibrationAmplitude,
+    tolerableSleep: device.tolerableSleepDuration
+  };
+
+  return devicePayload;
 }
 
 /**
