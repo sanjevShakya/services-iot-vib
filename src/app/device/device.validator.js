@@ -12,7 +12,7 @@ const schema = Joi.object({
   tenSecondMaxVibrationAmplitude: Joi.number().label('10 second max vibration amplitude').required(),
   metadataId: Joi.string().label('Metadata').required(),
   minVibrationAmplitude: Joi.number().label('Min Vibration Amplitude').required(),
-  tolerableSleepDuration: Joi.number().label('Tolerable Sleep Duration').required(),
+  tolerableSleepDuration: Joi.number().label('Tolerable Sleep Duration').required()
 });
 
 /**
@@ -40,7 +40,10 @@ function deviceValidator(req, res, next) {
 function findDevice(req, res, next) {
   return deviceService
     .getDevice(req.params.id)
-    .then(() => next())
+    .then((data) => {
+      req.device = data;
+      next();
+    })
     .catch((err) => next(err));
 }
 

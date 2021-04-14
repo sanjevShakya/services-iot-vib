@@ -1,7 +1,8 @@
 import Boom from '@hapi/boom';
+import _get from 'lodash.get';
 
 import Device from './device.model';
-import { IOT_DEVICE_STATE } from '../../core/constants/topics';
+import { IOT_DEVICE_RESTART, IOT_DEVICE_STATE } from '../../core/constants/topics';
 
 /**
  * Get all devices.
@@ -91,7 +92,7 @@ export async function updateDevice(id, device, mqttClient) {
   return updatedDevice;
 }
 
-function getMqttPayloadDeviceState(device) {
+export function getMqttPayloadDeviceState(device) {
   const devicePayload = {
     deviceMACId: device.macId,
     stateVerified: true,
@@ -110,6 +111,16 @@ function getMqttPayloadDeviceState(device) {
  * @param   {Number|String}  id
  * @returns {Promise}
  */
-export function deleteDevice(id) {
-  return new Device({ id }).fetch().then((device) => device.destroy());
+export async function deleteDevice(id, deviceData, mqttClient) {
+  const device = await new Device({ id }).fetch().then((device) => device.destroy());
+
+  try {
+    const device = _get(deviceData, 'attributes', {});
+
+    mqttClient.client.publish(IOT_DEVICE_RESTART, JSON.stringify(getMqttPayloadDeviceState(device)));
+  } catch (e) {
+    // do nothing
+  }
+
+  return device;
 }

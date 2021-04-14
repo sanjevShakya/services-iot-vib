@@ -74,7 +74,7 @@ export function update(req, res, next) {
  */
 export function deleteDevice(req, res, next) {
   deviceService
-    .deleteDevice(req.params.id)
+    .deleteDevice(req.params.id, req.device, req.mqttClient)
     .then((data) => res.status(HttpStatus.NO_CONTENT).json({ data }))
     .catch((err) => next(err));
 }
