@@ -16,6 +16,7 @@
     "make:seeder": "yarn knex seed:make --knexfile src/knexfile.js",
     "make:migration": "yarn knex migrate:make --knexfile src/knexfile.js",
     "build": "rimraf dist && babel src --copy-files --out-dir dist --source-maps",
+    "create:vapidkeys": "babel-node node_modules/.bin/web-push generate-vapid-keys > vapid-keys.txt",
     "start:dev": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "test": "cross-env NODE_ENV=test mocha --exit --recursive --require @babel/register test",
     "test:coverage": "cross-env NODE_ENV=test nyc --require @babel/register --reporter lcov --reporter text mocha --exit --recursive test"
@@ -65,6 +66,7 @@
     "serve-favicon": "^2.5.0",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-dist": "^3.38.0",
+    "web-push": "^3.4.4",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
   },

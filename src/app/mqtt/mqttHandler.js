@@ -5,7 +5,8 @@ import {
   IOT_BROADCAST,
   IOT_DEVICE_GET_STATE,
   IOT_DEVICE_DATA,
-  IOT_DEVICE_STATE
+  IOT_DEVICE_STATE,
+  IOT_DEVICE_NOTIFICATION
 } from '../../core/constants/topics';
 import * as mqttService from './mqttService';
 
@@ -49,6 +50,9 @@ class MqttHandler {
 
         case IOT_DEVICE_STATE:
           mqttService.handleDeviceState(this.client, data, topic);
+          break;
+        case IOT_DEVICE_NOTIFICATION:
+          mqttService.handleDeviceNotification(this.client, data, topic);
           break;
       }
     } catch (err) {

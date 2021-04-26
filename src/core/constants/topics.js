@@ -8,6 +8,7 @@ export const IOT_DEVICE_DATA = 'iot-vib/data';
 export const IOT_DEVICE_STATUS = 'iot-vib/current-state/five-s';
 export const IOT_DEVICE_RESTART = 'iot-vib/device-restart';
 export const IOT_DEVICE_CALIBRATE = 'iot-vib/calibrate';
+export const IOT_DEVICE_NOTIFICATION = 'iot-vib/notification';
 
 export const TOPIC_CONFIG = {
   [IOT_BROADCAST]: {
@@ -28,4 +29,11 @@ export const TOPIC_CONFIG = {
   }
 };
 
-export const TOPICS = [IOT_BROADCAST, IOT_VERIFY, IOT_DEVICE_GET_STATE, IOT_DEVICE_DATA, IOT_DEVICE_STATUS];
+export const TOPICS = [
+  IOT_BROADCAST,
+  IOT_VERIFY,
+  IOT_DEVICE_GET_STATE,
+  IOT_DEVICE_DATA,
+  IOT_DEVICE_STATUS,
+  IOT_DEVICE_NOTIFICATION
+];

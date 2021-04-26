@@ -2,6 +2,7 @@ import * as topics from '../../core/constants/topics';
 import * as deviceService from '../device/device.service';
 import _get from 'lodash.get';
 import * as deviceLogService from '../devicelogs/deviceLogs.service';
+import * as notificationService from '../lnsNotification/lnsNotification.service';
 
 const availableDevices = {};
 
@@ -14,7 +15,7 @@ export const fetchDeviceState = async (client, data) => {
     if (device) {
       device = _get(device, 'attributes', {});
 
-      const devicePayload = deviceService.getMqttPayloadDeviceState(device)
+      const devicePayload = deviceService.getMqttPayloadDeviceState(device);
 
       client.publish(topics.IOT_DEVICE_STATE, JSON.stringify(devicePayload));
     }
@@ -87,11 +88,24 @@ export const generateUnverifiedAvailableDevices = async (client, data, topic) =>
       };
 
       delete availableDevices[deviceMacId];
+
       return client.publish(topics.IOT_BROADCAST_VERIFY, JSON.stringify(verifiedPayload), { qos: 2 });
     } else {
       availableDevices[deviceMacId] = data;
 
       return client.publish(topics.IOT_UNVERIFIED_AVAILABLE_DEVICES, JSON.stringify(availableDevices));
     }
+  }
+};
+
+export const handleDeviceNotification = async (client, data, topic) => {
+  const deviceMacId = data.deviceMACId;
+
+  if (deviceMacId && data.ds == 'TRUEOFF') {
+    const device = await deviceService.getDeviceByMacId(deviceMacId, false);
+
+    const deviceData = _get(device, 'attributes', {});
+
+    notificationService.sendNotification(deviceData);
   }
 };
