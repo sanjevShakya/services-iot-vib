@@ -14,7 +14,7 @@ export const fetchDeviceState = async (client, data) => {
     if (device) {
       device = _get(device, 'attributes', {});
 
-      const devicePayload = deviceService.getMqttPayloadDeviceState(device);
+      const devicePayload = deviceService.getMqttPayloadDeviceState(device)
 
       client.publish(topics.IOT_DEVICE_STATE, JSON.stringify(devicePayload));
     }
@@ -87,8 +87,7 @@ export const generateUnverifiedAvailableDevices = async (client, data, topic) =>
       };
 
       delete availableDevices[deviceMacId];
-
-      return client.publish(topics.IOT_BROADCAST_VERIFY, JSON.stringify(verifiedPayload));
+      return client.publish(topics.IOT_BROADCAST_VERIFY, JSON.stringify(verifiedPayload), { qos: 2 });
     } else {
       availableDevices[deviceMacId] = data;
 
