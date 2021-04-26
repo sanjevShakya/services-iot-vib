@@ -30,6 +30,10 @@ router.put('/:id', findDevice, deviceValidator, deviceController.update);
  */
 router.delete('/:id', findDevice, deviceController.deleteDevice);
 
-router.get('/metadata/:name', deviceController.fetchByMetadataName)
+router.get('/metadata/:name', deviceController.fetchByMetadataName);
+
+router.post('/restart/:id', findDevice, deviceController.restartDevice);
+
+router.post('/calibrate/:id', deviceController.calibrateDevice);
 
 export default router;

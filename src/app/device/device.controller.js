@@ -78,3 +78,32 @@ export function deleteDevice(req, res, next) {
     .then((data) => res.status(HttpStatus.NO_CONTENT).json({ data }))
     .catch((err) => next(err));
 }
+
+/**
+ * Delete a device.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export function restartDevice(req, res, next) {
+  deviceService
+    .restartDevice(req.params.id, req.mqttClient)
+    .then((data) => res.status(HttpStatus.NO_CONTENT).json({ data }))
+    .catch((err) => next(err));
+}
+
+
+/**
+ * Delete a device.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+ export function calibrateDevice(req, res, next) {
+  deviceService
+    .calibrateDevice(req.body, req.mqttClient)
+    .then((data) => res.status(HttpStatus.NO_CONTENT).json({ data }))
+    .catch((err) => next(err));
+}

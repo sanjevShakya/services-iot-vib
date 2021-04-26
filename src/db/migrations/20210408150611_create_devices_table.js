@@ -13,7 +13,7 @@ export function up(knex) {
     table.string('macId').unique().notNull();
     table.boolean('isVerified').defaultTo(false);
     table.decimal('tolerableSleepDuration').defaultTo(10);
-    table.decimal('minVibrationAmplitude').defaultTo(0);
+    table.decimal('offset').defaultTo(0);
     table.decimal('maxVibrationAmplitude').defaultTo(10);
     table.decimal('tenSecondMaxVibrationAmplitude').defaultTo(8);
     table.string('metadataId').unique().notNull();

@@ -1,7 +1,7 @@
 import * as topics from '../../core/constants/topics';
 import * as deviceService from '../device/device.service';
 import _get from 'lodash.get';
-import * as deviceConstant from '../../core/constants/deviceConstants';
+import * as deviceLogService from '../devicelogs/deviceLogs.service';
 
 const availableDevices = {};
 
@@ -14,40 +14,56 @@ export const fetchDeviceState = async (client, data) => {
     if (device) {
       device = _get(device, 'attributes', {});
 
-      const devicePayload =  deviceService.getMqttPayloadDeviceState(device)
+      const devicePayload = deviceService.getMqttPayloadDeviceState(device);
 
       client.publish(topics.IOT_DEVICE_STATE, JSON.stringify(devicePayload));
     }
   }
 };
 
+function prepareDeviceLogPayload(data) {
+  return {
+    macId: data.deviceMACId,
+    deviceState: data.deviceState,
+    ax: data.ax,
+    ay: data.ay,
+    az: data.az,
+    mean: data.mean,
+    comparedMean: data.comparedMean,
+    period: data.period,
+    tenSecondMaxVibrationAmplitude: data.tenSThreshold,
+    fiveMinuteMaxVibrationAmplitude: data.fiveMThreshold
+  };
+}
+
+function mapMqttDataKeys(data) {
+  return {
+    deviceMACId: data.macId,
+    deviceState: data.ds,
+    ax: data.ax,
+    ay: data.ay,
+    az: data.az,
+    mean: data.mean,
+    comparedMean: data.cm,
+    period: data.p,
+    tenSThreshold: data.tenSTh,
+    fiveMThreshold: data.fiveMTh,
+    offset: data.ofst
+  };
+}
+
 export const handleDeviceData = async (client, data) => {
-  const deviceMacId = data.deviceMACId;
-  const dataPeriod = Number(data.period);
-
-  if (deviceMacId) {
-    switch (dataPeriod) {
-      case deviceConstant.PERIOD_FIVE_MINUTES:
-        // handleFiveMinuteDeviceData(client, data);
-        break;
-      case deviceConstant.PERIOD_TEN_SECONDS:
-        handleTenSecondDeviceData(client, data);
-        break;
-    }
-  }
-};
-
-// async function handleFiveMinuteDeviceData(client, data) {
-//   let device =  await deviceService.getDeviceByMacId(data.deviceMacId, false);
-//   device = _get(device, 'attributes', {});
-// }
-
-async function handleTenSecondDeviceData(client, data) {
+  data = mapMqttDataKeys(data);
   let device = await deviceService.getDeviceByMacId(data.deviceMACId, false);
 
   device = _get(device, 'attributes', {});
+
+  if (process.env.APP_LOG_STATUS === 'START') {
+    deviceLogService.createDeviceLog(prepareDeviceLogPayload(data));
+  }
+
   client.publish(`${topics.IOT_DEVICE_DATA}/${device.metadataId}`, JSON.stringify(data));
-}
+};
 
 export async function handleDeviceState(client, data) {
   if (data && data.deviceMACId) {

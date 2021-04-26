@@ -7,6 +7,7 @@ export const IOT_DEVICE_GET_STATE = 'iot-vib/broadcast/state';
 export const IOT_DEVICE_DATA = 'iot-vib/data';
 export const IOT_DEVICE_STATUS = 'iot-vib/current-state/five-s';
 export const IOT_DEVICE_RESTART = 'iot-vib/device-restart';
+export const IOT_DEVICE_CALIBRATE = 'iot-vib/calibrate';
 
 export const TOPIC_CONFIG = {
   [IOT_BROADCAST]: {

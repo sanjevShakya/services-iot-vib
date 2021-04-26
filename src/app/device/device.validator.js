@@ -11,7 +11,7 @@ const schema = Joi.object({
   maxVibrationAmplitude: Joi.number().label('5 min Max Vibration Amplitude').required(),
   tenSecondMaxVibrationAmplitude: Joi.number().label('10 second max vibration amplitude').required(),
   metadataId: Joi.string().label('Metadata').required(),
-  minVibrationAmplitude: Joi.number().label('Min Vibration Amplitude').required(),
+  offset: Joi.number().label('Min Vibration Amplitude').required(),
   tolerableSleepDuration: Joi.number().label('Tolerable Sleep Duration').required()
 });
 

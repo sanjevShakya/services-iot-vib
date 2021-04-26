@@ -2,7 +2,7 @@ import Boom from '@hapi/boom';
 import _get from 'lodash.get';
 
 import Device from './device.model';
-import { IOT_DEVICE_RESTART, IOT_DEVICE_STATE } from '../../core/constants/topics';
+import { IOT_DEVICE_RESTART, IOT_DEVICE_STATE, IOT_DEVICE_CALIBRATE } from '../../core/constants/topics';
 
 /**
  * Get all devices.
@@ -96,7 +96,7 @@ export function getMqttPayloadDeviceState(device) {
   const devicePayload = {
     deviceMACId: device.macId,
     stateVerified: true,
-    minThreshold: device.minVibrationAmplitude,
+    offset: device.offset,
     fiveMThreshold: device.maxVibrationAmplitude,
     tenSThreshold: device.tenSecondMaxVibrationAmplitude,
     tolerableSleep: device.tolerableSleepDuration
@@ -123,4 +123,31 @@ export async function deleteDevice(id, deviceData, mqttClient) {
   }
 
   return device;
+}
+
+export async function restartDevice(id, mqttClient) {
+  try {
+    const deviceData = await new Device({ id }).fetch();
+    const device = _get(deviceData, 'attributes', {});
+
+    mqttClient.client.publish(IOT_DEVICE_RESTART, JSON.stringify(getMqttPayloadDeviceState(device)));
+
+    return true;
+  } catch (e) {
+    throw Boom.notFound('Device not found');
+  }
+}
+
+export async function calibrateDevice(device, mqttClient) {
+  try {
+    const payload = {
+      deviceMACId: device.macId
+    };
+
+    mqttClient.client.publish(IOT_DEVICE_CALIBRATE, JSON.stringify(payload));
+
+    return true;
+  } catch (e) {
+    throw Boom.serverUnavailable('Moqsuitto client may be down.');
+  }
 }

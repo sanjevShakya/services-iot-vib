@@ -33,19 +33,26 @@ class MqttHandler {
     const payload = message.toString('utf-8');
     const data = JSON.parse(payload);
 
-    switch (topic) {
-      case IOT_BROADCAST:
-        mqttService.generateUnverifiedAvailableDevices(this.client, data, topic);
-        break;
-      case IOT_DEVICE_GET_STATE:
-        mqttService.fetchDeviceState(this.client, data, topic);
-        break;
-      case IOT_DEVICE_DATA:
-        mqttService.handleDeviceData(this.client, data, topic);
-        break;
-      case IOT_DEVICE_STATE:
-        mqttService.handleDeviceState(this.client, data, topic);
-        break;
+    try {
+      switch (topic) {
+        case IOT_BROADCAST:
+          mqttService.generateUnverifiedAvailableDevices(this.client, data, topic);
+          break;
+
+        case IOT_DEVICE_GET_STATE:
+          mqttService.fetchDeviceState(this.client, data, topic);
+          break;
+
+        case IOT_DEVICE_DATA:
+          mqttService.handleDeviceData(this.client, data, topic);
+          break;
+
+        case IOT_DEVICE_STATE:
+          mqttService.handleDeviceState(this.client, data, topic);
+          break;
+      }
+    } catch (err) {
+      logger.error(`mqtt service handle error for topic ${topic}`);
     }
   }
 
